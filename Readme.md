@@ -230,7 +230,6 @@ python demo.py -v tiny_yolo_v3 --cuda --mode --path_to_img [请输入您的路�
   <img style="display: block; margin: 0 auto;" src="https://latex.codecogs.com/gif.latex?Error1%20%3D%20%5Csum%20%5Climits_i%5E%7Bn%20-%201%7D%20%7B%5Cleft%28%20%7Bgroundtrut%7Bh_%7Bdist%5Cleft%5B%20i%20%5Cright%5D%7D%7D%20-%20dist%5Cleft%28%20%7Bpoint%5Cleft%5B%20i%20%5Cright%5D%2Cpoint%5Cleft%5B%20%7Bi%20&plus;%201%7D%20%5Cright%5D%7D%20%5Cright%29%7D%20%5Cright%29%5E2%7D" />
 </p>  
 
-$$Error1 = \sum \limits_i^{n - 1} {\left( {groundtrut{h_{dist\left[ i \right]}} - dist\left( {point\left[ i \right],point\left[ {i + 1} \right]} \right)} \right)^2}$$  
 &emsp;&emsp;$Error1$![img](https://latex.codecogs.com/gif.latex?Error1)用来保证灯条位置间满足距离约束。  
 
 <p align="center">
@@ -238,15 +237,13 @@ $$Error1 = \sum \limits_i^{n - 1} {\left( {groundtrut{h_{dist\left[ i \right]}} 
   <img style="display: block; margin: 0 auto;" src="https://latex.codecogs.com/gif.latex?Error2%20%3D%20%5Csum%20%5Climits_i%5En%20%5Cleft%28%20%7Bdist%7B%7B%5Cleft%28%20%7Bpoint%5Cleft%5B%20i%20%5Cright%5D%2Cpoint%5Cleft%5B%20%7Bi%20-%201%7D%20%5Cright%5D%7D%20%5Cright%29%7D%5ET%7D%7B%5CSigma%20%5E%7B%20-%201%7D%7Ddist%5Cleft%28%20%7Bpoint%5Cleft%5B%20i%20%5Cright%5D%2Cpoint%5Cleft%5B%20%7Bi%20-%201%7D%20%5Cright%5D%7D%20%5Cright%29%7D%20%5Cright%29" />
 </p>  
 
-$$Error2 = \sum \limits_i^n \left( {dist{{\left( {point\left[ i \right],point\left[ {i - 1} \right]} \right)}^T}{\Sigma ^{ - 1}}dist\left( {point\left[ i \right],point\left[ {i - 1} \right]} \right)} \right)$$  
-$Error2$![img](https://latex.codecogs.com/gif.latex?Error2)马氏距离用来权衡灯条优化后的位置偏离原始坐标的概率惩罚。 
+![img](https://latex.codecogs.com/gif.latex?Error2)马氏距离用来权衡灯条优化后的位置偏离原始坐标的概率惩罚。 
 
 <p align="center">
   <br>
   <img style="display: block; margin: 0 auto;" src="https://latex.codecogs.com/gif.latex?Error%20%3D%20Error1%20&plus;%20Error2" />
 </p>  
-
-$$Error = Error1 + Error2$$   
+ 
 ***2）*** 将两种底盘假设下的麦克纳姆轮位置投影至图像坐标系生成boundingbox，在boundingbox附近图像区域内和数据集进行模板匹配。以两种假设下的概率最高者为作为机器人姿态。在以该姿态为基础将灯条先验位置投影至图像坐标系，进行剩余两种姿态的检测。过程如图所示，图像含义为，当前观测到的装甲板是前向或后向装甲板，和灯条检测结合，估计出机器人尾部位姿如图4-b所示。  
 <p align="center"><img style="display: block; margin: 0 auto;" src="PIC/姿态识别.png" width="65%" alt="" /></p>  
 <p align="center">图7-10 机器人姿态识别</p>  
@@ -268,23 +265,20 @@ $$Error = Error1 + Error2$$
   <img style="display: block; margin: 0 auto;" src="https://latex.codecogs.com/gif.latex?%7BR_a%7D%28f%29%20%3D%20E%5Ba%28t%29a%28t%20&plus;%20f%29%5D%20%3D%20e_a%5E2%7Be%5E%7B%20-%20%5Calpha%20%7Cf%7C%7D%7D%28%5Calpha%20%5Cge%200%29" />
 </p>  
 
-$${R_a}(f) = E[a(t)a(t + f)] = e_a^2{e^{ - \alpha |f|}}(\alpha  \ge 0)$$
-&emsp;&emsp;其中，$𝑒_𝑎^2![img](https://latex.codecogs.com/gif.latex?e_%5Calpha%5E2)为机动加速度方差，α![img](https://latex.codecogs.com/gif.latex?%5Calpha)为机动时间常数fm的倒数，即机动频率，通常取经验值。对时间自相关函数应用Wiener-Kolmogorov白化后，机动加速度可以用输入为白噪声的一阶时间相关模型来表示，即  
+&emsp;&emsp;其中，![img](https://latex.codecogs.com/gif.latex?e_%5Calpha%5E2)为机动加速度方差，![img](https://latex.codecogs.com/gif.latex?%5Calpha)为机动时间常数fm的倒数，即机动频率，通常取经验值。对时间自相关函数应用Wiener-Kolmogorov白化后，机动加速度可以用输入为白噪声的一阶时间相关模型来表示，即  
 
 <p align="center">
   <br>
   <img style="display: block; margin: 0 auto;" src="https://latex.codecogs.com/gif.latex?a%28t%29%20%3D%20-%20%5Calpha%20a%28t%29%20&plus;%20w%28t%29" />
 </p>  
 
-$$a(t) =  - \alpha a(t) + w(t) $$  
-&emsp;&emsp;其中w(t)是零均值白噪声，方差为2α𝑒𝑎2![img](https://latex.codecogs.com/gif.latex?2ae%5E%7B%5Calpha%20%5E2%7D)，由此可以得到连续时间系统下该模型的状态微分方程为  
+&emsp;&emsp;其中w(t)是零均值白噪声，方差为![img](https://latex.codecogs.com/gif.latex?2ae%5E%7B%5Calpha%20%5E2%7D)，由此可以得到连续时间系统下该模型的状态微分方程为  
 
 <p align="center">
   <br>
   <img style="display: block; margin: 0 auto;" src="https://latex.codecogs.com/gif.latex?%5Cbegin%7Bbmatrix%7D%5Cdot%20x%28t%29%20%5C%5C%20%5Cddot%20x%28t%29%5C%5C%20%5Cdot%7B%5Cddot%20x%7D%28t%29%20%5Cend%7Bbmatrix%7D%20%3D%20%5Cbegin%7Bbmatrix%7D%5C%200%261%260%20%5C%5C%200%260%261%20%5C%5C%200%260%26-a%20%5Cend%7Bbmatrix%7D%5Cbegin%7Bbmatrix%7D%5C%20x%28t%29%20%5C%5C%20%5Cdot%20x%28t%29%20%5C%5C%20%5Cddot%20x%28t%29%20%5Cend%7Bbmatrix%7D%20&plus;%20%5Cbegin%7Bbmatrix%7D%5C%200%20%5C%5C%200%20%5C%5C%201%20%5Cend%7Bbmatrix%7Dw%28t%29" />
 </p>  
 
-$$\begin{bmatrix}\dot x(t) \\ \ddot x(t)\\ \dot{\ddot x}(t) \end{bmatrix} = \begin{bmatrix}\ 0&1&0 \\ 0&0&1 \\ 0&0&-a \end{bmatrix}\begin{bmatrix}\ x(t) \\ \dot x(t) \\ \ddot x(t) \end{bmatrix} + \begin{bmatrix}\ 0 \\ 0 \\ 1 \end{bmatrix}w(t)$$
 &emsp;&emsp;离散形式为：  
 
 <p align="center">
@@ -292,7 +286,6 @@ $$\begin{bmatrix}\dot x(t) \\ \ddot x(t)\\ \dot{\ddot x}(t) \end{bmatrix} = \beg
   <img style="display: block; margin: 0 auto;" src="https://latex.codecogs.com/gif.latex?x%28k&plus;1%29%3DF%5Cast%20x%28k%29%3D%5Cbegin%7Bbmatrix%7D1%26T%26%28%5Calpha%20T-1&plus;e%5E%7B-%5Calpha%20T%7D%29/%5Calpha%20%5E2%20%5C%5C%200%261%26%281-e%5E%7B-%5Calpha%20T%7D%29/%5Calpha%20%5C%5C%200%260%26e%5E%7B-%5Calpha%20T%7D%20%5Cend%7Bbmatrix%7D%5Cbegin%7Bbmatrix%7D%5C%20x%28t%29%20%5C%5C%20%5Cdot%20x%28t%29%5C%5C%20%5Cddot%20x%28t%29%20%5Cend%7Bbmatrix%7D" />
 </p>  
 
-$$x(k+1)=F\ast x(k)=\begin{bmatrix}1&T&(\alpha T-1+e^{-\alpha T})/\alpha ^2 \\ 0&1&(1-e^{-\alpha T})/\alpha \\ 0&0&e^{-\alpha T} \end{bmatrix}\begin{bmatrix}\ x(t) \\ \dot x(t)\\ \ddot x(t) \end{bmatrix}$$
 &emsp;&emsp;观测矩阵为：  
 
 <p align="center">
@@ -300,7 +293,6 @@ $$x(k+1)=F\ast x(k)=\begin{bmatrix}1&T&(\alpha T-1+e^{-\alpha T})/\alpha ^2 \\ 0
   <img style="display: block; margin: 0 auto;" src="https://latex.codecogs.com/gif.latex?Z%28k&plus;1%29%3DH%28k%29X%28k&plus;1%7Ck%29%3D%5Cbegin%7Bbmatrix%7D1%260%260%20%5Cend%7Bbmatrix%7D%5Cbegin%7Bbmatrix%7D%20x%28t%29%20%5C%5C%20%5Cdot%20x%28t%29%5C%5C%20%5Cddot%20x%28t%29%20%5Cend%7Bbmatrix%7D" />
 </p>  
 
-$$Z(k+1)=H(k)X(k+1|k)=\begin{bmatrix}1&0&0 \end{bmatrix}\begin{bmatrix} x(t) \\ \dot x(t)\\ \ddot x(t) \end{bmatrix}$$
 &emsp;&emsp;为了使滤波器适用于高机动情况，需要修改卡尔曼增益，利用预报残差的增大，使得下列公式成立，残差序列仍然保持正交，就可以实现滤波器对实际系统状态的跟踪：  
 
 <p align="center">
@@ -308,8 +300,7 @@ $$Z(k+1)=H(k)X(k+1|k)=\begin{bmatrix}1&0&0 \end{bmatrix}\begin{bmatrix} x(t) \\ 
   <img style="display: block; margin: 0 auto;" src="https://latex.codecogs.com/gif.latex?E%5B%5Cgamma%20%28k&plus;1&plus;j%29%5Cgamma%20%5ET%20%28k&plus;1&plus;j%29%5D%3D0%3B%5Cspace%5Cspace%20k%3D0%2C1%2C2...%3Bj%3D0%2C1%2C2..." />
 </p>  
 
-$$E[\gamma (k+1+j)\gamma ^T (k+1+j)]=0 \space\space k=0,1,2...;j=0,1,2...$$
-&emsp;&emsp;引入时变渐消因子𝜆(𝑘+1) ![img](https://latex.codecogs.com/gif.latex?%5Clambda%20%28k&plus;1%29)，遗忘因子𝛽![img](https://latex.codecogs.com/gif.latex?%5Cbeta)，以及弱化因子 𝜌![img](https://latex.codecogs.com/gif.latex?%5Crho)，构成新的强跟踪滤波器：  
+&emsp;&emsp;引入时变渐消因子![img](https://latex.codecogs.com/gif.latex?%5Clambda%20%28k&plus;1%29)，遗忘因子![img](https://latex.codecogs.com/gif.latex?%5Cbeta)，以及弱化因子![img](https://latex.codecogs.com/gif.latex?%5Crho)，构成新的强跟踪滤波器：  
 <p align="center"><img style="display: block; margin: 0 auto;" src="PIC/流程.png" width="100%" alt="" /></p>  
 <p align="center">图7-13 强跟踪卡尔曼滤波算法流程</p>  
 使用强跟踪卡尔曼滤波器对机器人x，y，theta三个参数进行预测跟踪，计算得到最佳打击位置。  
